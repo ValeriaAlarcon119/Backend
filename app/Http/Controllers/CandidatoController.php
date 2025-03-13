@@ -42,7 +42,14 @@ class CandidatoController extends Controller
 
     public function destroy($id)
     {
-        Candidato::destroy($id);
-        return response()->json(null, 204);
+        $candidato = Candidato::findOrFail($id);
+
+        // Verificar si el candidato tiene solicitudes asociadas
+        if ($candidato->solicitudes()->count() > 0) {
+            return response()->json(['message' => 'Este candidato está en uso en la aplicación.'], 422);
+        }
+
+        $candidato->delete();
+        return response()->json(['message' => 'Candidato eliminado con éxito.']);
     }
 }

@@ -55,7 +55,13 @@ class TipoEstudioController extends Controller
     public function destroy($id)
     {
         $tipoEstudio = TipoEstudio::findOrFail($id);
+
+        // Verificar si el tipo de estudio tiene solicitudes asociadas
+        if ($tipoEstudio->solicitudes()->count() > 0) {
+            return response()->json(['message' => 'Este tipo de estudio está en uso en la aplicación.'], 422);
+        }
+
         $tipoEstudio->delete();
-        return response()->noContent();
+        return response()->json(['message' => 'Tipo de estudio eliminado con éxito.']);
     }
 }

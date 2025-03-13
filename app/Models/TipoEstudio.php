@@ -14,4 +14,10 @@ class TipoEstudio extends Model
         'descripcion',
         'precio',
     ];
+
+    // Definir la relación con Solicitud
+    public function solicitudes()
+    {
+        return $this->hasMany(Solicitud::class);
+    }
 }

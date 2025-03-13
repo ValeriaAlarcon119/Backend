@@ -16,4 +16,10 @@ class Candidato extends Model
         'correo',
         'telefono',
     ];
+
+    // Definir la relación con Solicitud
+    public function solicitudes()
+    {
+        return $this->hasMany(Solicitud::class);
+    }
 }
