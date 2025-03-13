@@ -1,23 +1,23 @@
 # Proyecto Backend - Sistema de Gestión de Solicitudes
 
 ## Descripción
-Este proyecto es un sistema de gestión de solicitudes que permite a los usuarios registrar y gestionar solicitudes con candidatos 
-y tipos de estudios. Utiliza Laravel 11 como framework backend y SQLite como base de datos.
+Este proyecto es un sistema de gestión de solicitudes que permite a los usuarios registrar y gestionar solicitudes con candidatos y tipos de estudios. Utiliza Laravel 11 como framework backend y SQLite como base de datos.
 
 ## Requisitos
 - **Laravel 11.x.x**
 - **PHP 8.0 o superior**
 - **Composer**
-- **SQLite3**: Asegúrate de tener SQLite3 instalado en tu sistema. Puedes verificar la instalación ejecutando el siguiente 
-comando en tu terminal:
+- **SQLite3**: Asegúrate de tener SQLite3 instalado en tu sistema. Puedes verificar la instalación ejecutando el siguiente comando en tu terminal:
 
 ```bash
 sqlite3 --version
 ```
 
-## Instalación
+## Guía de Configuración Completa
 
-1. **Clonar el Repositorio**:
+### Configuración del Backend
+
+1. **Clonar el Repositorio del Backend**:
    ```bash
    git clone https://github.com/ValeriaAlarcon119/Backend.git
    cd Backend
@@ -29,50 +29,58 @@ sqlite3 --version
    composer install
    ```
 
-3. **Instalar SQLite3**:
-(esto teniendo en cuenta la configuracion en .env)
-   Si aún no tienes SQLite3 instalado, puedes instalarlo siguiendo las instrucciones específicas para tu sistema operativo:
-
-   - **Para Windows**: Puedes descargar el archivo binario de SQLite desde [sqlite.org](https://www.sqlite.org/download.html) y seguir las instrucciones de instalación.
-   - **Para macOS**: Puedes instalar SQLite3 usando Homebrew:
-     ```bash
-     brew install sqlite
-     ```
-   - **Para Linux**: Puedes instalar SQLite3 usando el gestor de paquetes de tu distribución. Por ejemplo, en Ubuntu:
-     ```bash
-     sudo apt-get install sqlite3
-     ```
-
-4. **Configurar el Archivo `.env`**:
+3. **Configurar el Archivo `.env`**:
    Copia el archivo `.env.example` a `.env` y configura la conexión a la base de datos:
    ```bash
    cp .env.example .env
    ```
-
-5. **Configurar CORS y Sanctum**:
-   Asegúrate de que el middleware de CORS esté habilitado en `app/Http/Kernel.php` y que Sanctum esté configurado en tu archivo `.env`:
+   Asegúrate de que las siguientes líneas estén configuradas correctamente:
    ```env
-   SANCTUM_STATEFUL_DOMAINS=localhost:4200
+   DB_CONNECTION=sqlite
+   DB_DATABASE=Ruta del repositorio clonado\Backend\database\database.sqlite
+   DB_FOREIGN_KEYS=true
    SESSION_DRIVER=cookie
+   SANCTUM_STATEFUL_DOMAINS=localhost
+   APP_KEY=base64:MgeAutVW69EdDc74CUXIo9EBphcPm/9SmBqJDqOvw2w=
    ```
 
-6. **Migrar la Base de Datos**:
-   Ejecuta las migraciones para crear las tablas necesarias:
+4. **Generar Clave de Aplicación**:
+   ```bash
+   php artisan key:generate
+   ```
+
+5. **Verificación de la Versión de SQLite3 y Creación del Archivo de Base de Datos**
+
+   Antes de proceder con las migraciones, es importante verificar que SQLite3 esté instalado correctamente y crear el archivo de base de datos `database.sqlite`. Aquí te explico cómo hacerlo:
+
+   1. **Verificar la Versión de SQLite3**:
+      - Asegúrate de que SQLite3 esté instalado en tu sistema. Puedes verificar la versión ejecutando el siguiente comando en la terminal desde la carpeta donde se encuentra el ejecutable de SQLite3:
+      
+      ```bash
+      cd \ruta\a\sqlite\
+      .\sqlite3.exe --version
+      ```
+
+   2. **Crear el Archivo de Base de Datos `database.sqlite`**:
+      - Desde la carpeta de SQLite3, crea el archivo de base de datos deberia ser asi:
+      
+      ```bash
+      .\sqlite3.exe "ruta donde esta el repositorio clonado\Backend\database\database.sqlite"
+      ```
+
+6. **Ejecutar las Migraciones**:
+   - Una vez que el archivo de base de datos esté creado, vuelve a la carpeta `Backend` y ejecuta las migraciones:
+   
    ```bash
    php artisan migrate --seed
    ```
-
-   Esto también ejecutará el seeder `UserSeeder`, que creará un usuario admin con las siguientes credenciales:
-   - **Nombre**: admin
-   - **Correo**: admin@gmail.com
-   - **Contraseña**: admin123
 
 7. **Iniciar el Servidor**:
    ```bash
    php artisan serve
    ```
-
    El backend estará disponible en `http://localhost:8000`.
+
 
 ## Rutas y Endpoints
 
@@ -247,69 +255,14 @@ curl -X POST http://localhost:8000/api/solicitudes \
 - **SQLite**: Base de datos ligera utilizada para el almacenamiento de datos.
 - **Bootstrap**: Framework CSS para el diseño de la interfaz.
 
-## Validaciones
-- Al intentar eliminar un candidato o un tipo de estudio, se verifica si están asociados a alguna solicitud. 
-Si es así, se devuelve un mensaje de error y no se permite la eliminación.
-
-## Configuración de la Base de Datos
-
-
-#### Versión de SQLite
-
-Asegúrate de tener instalada la versión de **SQLite3** en tu sistema. Puedes verificar la versión instalada ejecutando el siguiente comando en tu terminal:
-
-```bash
-sqlite3 --version
-```
-
-#### Conexión a la Base de Datos
-
-1. **Archivo de Configuración**:
-   - El archivo de configuración de la base de datos se encuentra en el archivo `.env` en la raíz del proyecto. Asegúrate de que las siguientes líneas estén configuradas correctamente:
-
-   ```env
-   DB_CONNECTION=sqlite
-   DB_DATABASE=UbicacionRepositorioClonado\Backend\database\database.sqlite
-   ```
-
-   - `DB_CONNECTION`: Debe estar configurado como `sqlite`.
-   - `DB_DATABASE`: Especifica la ruta al archivo de la base de datos SQLite. Asegúrate de que la ruta sea correcta y que el archivo `database.sqlite` exista en la ubicación especificada.
-
-2. **Creación de la Base de Datos**:
-   - Si el archivo `database.sqlite` no existe, Laravel lo creará automáticamente cuando ejecutes las migraciones. Asegúrate de ejecutar el siguiente comando para crear las tablas necesarias:
-
-   ```bash
-   php artisan migrate --seed
-   ```
-
-   Esto también ejecutará el seeder `UserSeeder`, que creará un usuario admin con las credenciales predeterminadas.
-
-3. **Verificación de la Conexión**:
-   - Una vez que hayas configurado el archivo `.env` y ejecutado las migraciones, puedes verificar que la conexión a la base de datos esté funcionando correctamente al iniciar el servidor de Laravel:
-
-   ```bash
-   php artisan serve
-   ```
-
-   - El backend estará disponible en `http://localhost:8000`, y podrás interactuar con la base de datos a través de las rutas API definidas.
-
-### Notas Adicionales
-
-- Asegúrate de que el archivo de la base de datos tenga los permisos adecuados para que Laravel pueda leer y escribir en él.
-- Si experimentas problemas de conexión, verifica que la ruta al archivo de la base de datos sea correcta y que no haya errores tipográficos en el archivo `.env`.
-- Asegúrate de que las migraciones se hayan ejecutado correctamente para que las tablas existan en la base de datos.
-- Puedes utilizar herramientas como **Postman** para probar las consultas y operaciones de inserción a través de la API.
-- Recuerda salir de la consola de SQLite escribiendo `.exit` o `CTRL + D` cuando hayas terminado.
-
 
 ## Decisiones Técnicas Tomadas
 
 ### 1. Elección de SQLite como Base de Datos
 - **Razón**: Inicialmente consideré usar MySQL como base de datos, pero opté por SQLite debido a su simplicidad y ligereza. SQLite no requiere la creación de un usuario y contraseña, lo que facilita la configuración y el desarrollo local. Esto permite un ciclo de desarrollo más rápido sin la necesidad de gestionar credenciales de base de datos.
 
-
-
-
+### 2. Desprotección de Rutas para Pruebas
+- **Razón**: Desprotegí las rutas `/dashboard`, `/register`, `/solicitudes`, `/candidatos` y `/tipos-estudio` para facilitar las pruebas de las funcionalidades del sistema en caso de que haya problemas con el inicio de sesión. Esto permite a los desarrolladores verificar que las demás rutas funcionen correctamente sin necesidad de autenticación.
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 

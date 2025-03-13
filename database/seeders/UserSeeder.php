@@ -13,11 +13,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!User::where('email', 'admin@example.com')->exists()) {
+        if (!User::where('email', 'admin@gmail.com')->exists()) {
             User::create([
                 'name' => 'admin',
-                'email' => 'admin@example.com',
-                'password' => bcrypt('admin'),
+                'email' => 'admin@gmail.com',
+                'password' => bcrypt('admin123'),
             ]);
         }
     }
